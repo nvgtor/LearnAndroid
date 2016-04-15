@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/nav_aty_life"
+            android:icon="@drawable/ic_menu_compass"
+            android:title="Life of Activity"/>
+
+        <item
+            android:id="@+id/nav_number_roll"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="Number Roll" />
+        <item
+            android:id="@+id/nav_custom"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="Custom view" />
+        <item
+            android:id="@+id/nav_point_anim"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="Point anim" />
+        <item
+            android:id="@+id/nav_vp_indicator"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="ViewPager Indicator" />
+    </group>
+
+</menu>

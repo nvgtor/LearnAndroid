@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="RainbowBar">
+        <attr name="hSpace" format="dimension"/>
+        <attr name="vSpace" format="dimension"/>
+        <attr name="barColor" format="color"/>
+    </declare-styleable>
+
+    <attr name="item_count" format="integer"></attr>
+    <declare-styleable name="ViewPagerIndicator">
+        <attr name="item_count" />
+    </declare-styleable>
+
+    <!-- 自定义水平、圆形进度条 -->
+    <declare-styleable name="NumberProgress">
+        <!-- 文字大小 -->
+        <attr name="textSize" format="dimension"/>
+        <!-- 文字颜色 -->
+        <attr name="textColor" format="color"/>
+        <!-- reached的高度 -->
+        <attr name="reachedHeight" format="dimension"/>
+        <!-- reached的颜色 -->
+        <attr name="reachedColor" format="color"/>
+        <!-- unReached的高度 -->
+        <attr name="unReachedHeight" format="dimension"/>
+        <!-- unReached的颜色 -->
+        <attr name="unReachedColor" format="color"/>
+        <!-- 当前进度 -->
+        <attr name="currentProgress" format="integer"/>
+        <!-- 总进度 -->
+
+        <attr name="maxProgress" format="integer"/>
+        <!-- unProgress颜色 -->
+        <attr name="unProgressColor" format="color"/>
+        <!-- progress颜色 -->
+        <attr name="progressColor" format="color"/>
+        <!-- progress宽度 -->
+        <attr name="progressWidth" format="dimension"/>
+    </declare-styleable>
+
+    <declare-styleable name="CheckBox_Sample">
+        <attr name="size" format="dimension" />
+        <attr name="color_border" format="color" />
+        <attr name="color_background" format="color" />
+    </declare-styleable>
+
+</resources>

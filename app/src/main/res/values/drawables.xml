@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="ic_menu_camera" type="drawable">@android:drawable/ic_menu_camera</item>
+    <item name="ic_menu_gallery" type="drawable">@android:drawable/ic_menu_gallery</item>
+    <item name="ic_menu_slideshow" type="drawable">@android:drawable/ic_menu_slideshow</item>
+    <item name="ic_menu_manage" type="drawable">@android:drawable/ic_menu_manage</item>
+    <item name="ic_menu_share" type="drawable">@android:drawable/ic_menu_share</item>
+    <item name="ic_menu_send" type="drawable">@android:drawable/ic_menu_send</item>
+
+    <item name="ic_menu_help" type="drawable">@android:drawable/ic_menu_help</item>
+    <item name="ic_menu_call" type="drawable">@android:drawable/ic_menu_call</item>
+    <item name="ic_menu_compass" type="drawable">@android:drawable/ic_menu_compass</item>
+    <item name="ic_menu_crop" type="drawable">@android:drawable/ic_menu_crop</item>
+    <item name="ic_menu_upload" type="drawable">@android:drawable/ic_menu_upload</item>
+
+    <item name="ic_menu_add" type="drawable">@android:drawable/ic_menu_add</item>
+</resources>
