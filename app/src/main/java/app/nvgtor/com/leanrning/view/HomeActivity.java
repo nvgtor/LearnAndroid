@@ -27,6 +27,8 @@ import com.github.florent37.viewanimator.ViewAnimator;
 import java.util.Locale;
 
 import app.nvgtor.com.leanrning.R;
+import app.nvgtor.com.leanrning.view.threeD.rotate3dpic.Rotate3dActivity;
+import app.nvgtor.com.leanrning.view.threeD.threeDSliding.ThreeDSlidingActivity;
 
 /**
  * Created by ydz on 16/3/26.
@@ -80,8 +82,8 @@ public class HomeActivity extends AppCompatActivity implements
         drawer = (DrawerLayout)findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this,
                 drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
         toggle.syncState();
+        drawer.addDrawerListener(toggle);
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -252,8 +254,16 @@ public class HomeActivity extends AppCompatActivity implements
                 Intent vpIndicatorIntent = new Intent(this, ViewPagerIndicatorActivity.class);
                 startActivity(vpIndicatorIntent);
                 break;
+            case R.id.nav_rotate:
+                Intent rotateIntent = new Intent(this, Rotate3dActivity.class);
+                startActivity(rotateIntent);
+                break;
+            case R.id.nav_threedsliding:
+                Intent threeDSlindgingIntent = new Intent(this, ThreeDSlidingActivity.class);
+                startActivity(threeDSlindgingIntent);
+                break;
         }
-        drawer.closeDrawer(GravityCompat.START);
+        drawer.closeDrawers();
         return true;
     }
 

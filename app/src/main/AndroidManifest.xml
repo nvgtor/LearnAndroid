@@ -26,6 +26,8 @@
         <activity android:name=".view.TestLifeOfActivity"/>
         <activity android:name=".view.HomeActivity"
                   android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".view.threeD.rotate3dpic.Rotate3dActivity"/>
+        <activity android:name=".view.threeD.threeDSliding.ThreeDSlidingActivity"/>
     </application>
 
 </manifest>
