@@ -32,6 +32,10 @@
             android:id="@+id/nav_threedsliding"
             android:icon="@drawable/ic_menu_compass"
             android:title="threeD sliding"/>
+        <item
+            android:id="@+id/nav_vp_gallery"
+            android:icon="@drawable/ic_menu_add"
+            android:title="viewpager gallery"/>
     </group>
 
 </menu>

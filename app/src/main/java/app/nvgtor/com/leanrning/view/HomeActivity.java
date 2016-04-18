@@ -29,6 +29,7 @@ import java.util.Locale;
 import app.nvgtor.com.leanrning.R;
 import app.nvgtor.com.leanrning.view.threeD.rotate3dpic.Rotate3dActivity;
 import app.nvgtor.com.leanrning.view.threeD.threeDSliding.ThreeDSlidingActivity;
+import app.nvgtor.com.leanrning.view.viewPagerGallery.ViewPagerGalleryActivity;
 
 /**
  * Created by ydz on 16/3/26.
@@ -261,6 +262,10 @@ public class HomeActivity extends AppCompatActivity implements
             case R.id.nav_threedsliding:
                 Intent threeDSlindgingIntent = new Intent(this, ThreeDSlidingActivity.class);
                 startActivity(threeDSlindgingIntent);
+                break;
+            case R.id.nav_vp_gallery:
+                Intent vpGalleryIntent = new Intent(this, ViewPagerGalleryActivity.class);
+                startActivity(vpGalleryIntent);
                 break;
         }
         drawer.closeDrawers();
