@@ -9,7 +9,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="app.nvgtor.com.leanrning.login.view.LoginActivity"
+            android:name=".view.viewPagerGallery.ViewPagerGalleryActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -19,6 +19,7 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".login.view.LoginActivity"/>
         <activity android:name=".view.NumberRollingActivity"/>
         <activity android:name=".view.CustomActivity"/>
         <activity android:name=".view.PointAnimActivity"/>
@@ -28,7 +29,6 @@
                   android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".view.threeD.rotate3dpic.Rotate3dActivity"/>
         <activity android:name=".view.threeD.threeDSliding.ThreeDSlidingActivity"/>
-        <activity android:name=".view.viewPagerGallery.ViewPagerGalleryActivity"/>
     </application>
 
 </manifest>
