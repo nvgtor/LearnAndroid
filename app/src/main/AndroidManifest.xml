@@ -2,6 +2,8 @@
 <manifest package="app.nvgtor.com.leanrning"
           xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -29,6 +31,9 @@
                   android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".view.threeD.rotate3dpic.Rotate3dActivity"/>
         <activity android:name=".view.threeD.threeDSliding.ThreeDSlidingActivity"/>
+
+        <activity android:name=".features.mdbook.BookHomeActivity"
+                  android:theme="@style/DrawerLayoutTheme"/>
     </application>
 
 </manifest>

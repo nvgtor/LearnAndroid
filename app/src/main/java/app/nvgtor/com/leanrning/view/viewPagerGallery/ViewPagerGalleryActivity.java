@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import app.nvgtor.com.leanrning.R;
+import app.nvgtor.com.leanrning.features.mdbook.BookHomeActivity;
 import app.nvgtor.com.leanrning.utils.PxToDpUtil;
 import app.nvgtor.com.leanrning.view.HomeActivity;
 
@@ -102,6 +103,7 @@ public class ViewPagerGalleryActivity extends AppCompatActivity implements Scale
                 toHomeActivity();
                 break;
             case 1:
+                toBookActivity();
                 break;
             case 2:
                 break;
@@ -112,6 +114,11 @@ public class ViewPagerGalleryActivity extends AppCompatActivity implements Scale
             case 5:
                 break;
         }
+    }
+
+    private void toBookActivity() {
+        Intent intent = new Intent(this, BookHomeActivity.class);
+        startActivity(intent);
     }
 
     private void toHomeActivity() {
