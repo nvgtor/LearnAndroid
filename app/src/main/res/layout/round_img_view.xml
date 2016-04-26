@@ -1,0 +1,63 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <app.nvgtor.com.leanrning.customViews.roundImageView.RoundImageView
+            android:id="@+id/id_qiqiu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:src="@drawable/p1" >
+        </app.nvgtor.com.leanrning.customViews.roundImageView.RoundImageView>
+
+        <app.nvgtor.com.leanrning.customViews.roundImageView.RoundImageView
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_margin="10dp"
+            android:src="@drawable/p2" >
+        </app.nvgtor.com.leanrning.customViews.roundImageView.RoundImageView>
+
+        <app.nvgtor.com.leanrning.customViews.roundImageView.RoundImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:src="@drawable/p3" >
+        </app.nvgtor.com.leanrning.customViews.roundImageView.RoundImageView>
+
+        <app.nvgtor.com.leanrning.customViews.roundImageView.RoundImageView
+            android:id="@+id/id_meinv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:src="@drawable/p4"
+            app:borderRadius="20dp"
+            app:type="round" >
+        </app.nvgtor.com.leanrning.customViews.roundImageView.RoundImageView>
+
+        <app.nvgtor.com.leanrning.customViews.roundImageView.RoundImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:src="@drawable/p5"
+            app:borderRadius="40dp"
+            app:type="round" >
+        </app.nvgtor.com.leanrning.customViews.roundImageView.RoundImageView>
+
+        <app.nvgtor.com.leanrning.customViews.roundImageView.RoundImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:src="@drawable/p6"
+            app:borderRadius="60dp"
+            app:type="round" >
+        </app.nvgtor.com.leanrning.customViews.roundImageView.RoundImageView>
+    </LinearLayout>
+
+</ScrollView>  

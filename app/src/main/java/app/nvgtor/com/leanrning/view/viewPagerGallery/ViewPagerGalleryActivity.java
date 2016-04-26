@@ -15,7 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import app.nvgtor.com.leanrning.R;
+import app.nvgtor.com.leanrning.customViews.roundImageView.RoundImgActivity;
 import app.nvgtor.com.leanrning.features.mdbook.BookHomeActivity;
+import app.nvgtor.com.leanrning.otherTest.GestureDetectorTest.GestureDetectorActivity;
 import app.nvgtor.com.leanrning.utils.PxToDpUtil;
 import app.nvgtor.com.leanrning.view.HomeActivity;
 
@@ -106,14 +108,26 @@ public class ViewPagerGalleryActivity extends AppCompatActivity implements Scale
                 toBookActivity();
                 break;
             case 2:
+                toRoundActivity();
                 break;
             case 3:
+                toGestureActivity();
                 break;
             case 4:
                 break;
             case 5:
                 break;
         }
+    }
+
+    private void toGestureActivity() {
+        Intent intent = new Intent(this, GestureDetectorActivity.class);
+        startActivity(intent);
+    }
+
+    private void toRoundActivity() {
+        Intent intent = new Intent(this, RoundImgActivity.class);
+        startActivity(intent);
     }
 
     private void toBookActivity() {

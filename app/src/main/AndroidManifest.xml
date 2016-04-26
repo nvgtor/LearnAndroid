@@ -34,6 +34,9 @@
 
         <activity android:name=".features.mdbook.BookHomeActivity"
                   android:theme="@style/DrawerLayoutTheme"/>
+
+        <activity android:name=".customViews.roundImageView.RoundImgActivity"/>
+        <activity android:name=".otherTest.GestureDetectorTest.GestureDetectorActivity"/>
     </application>
 
 </manifest>
