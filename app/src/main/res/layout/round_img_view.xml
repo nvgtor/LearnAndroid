@@ -14,21 +14,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:src="@drawable/p1" >
+            android:src="@drawable/kingmu" >
         </app.nvgtor.com.leanrning.customViews.roundImageView.RoundImageView>
 
         <app.nvgtor.com.leanrning.customViews.roundImageView.RoundImageView
             android:layout_width="200dp"
             android:layout_height="200dp"
             android:layout_margin="10dp"
-            android:src="@drawable/p2" >
+            android:src="@drawable/kingmu" >
         </app.nvgtor.com.leanrning.customViews.roundImageView.RoundImageView>
 
         <app.nvgtor.com.leanrning.customViews.roundImageView.RoundImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:src="@drawable/p3" >
+            android:src="@drawable/kingmu" >
         </app.nvgtor.com.leanrning.customViews.roundImageView.RoundImageView>
 
         <app.nvgtor.com.leanrning.customViews.roundImageView.RoundImageView
@@ -36,7 +36,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:src="@drawable/p4"
+            android:src="@drawable/kingmu"
             app:borderRadius="20dp"
             app:type="round" >
         </app.nvgtor.com.leanrning.customViews.roundImageView.RoundImageView>
@@ -45,7 +45,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:src="@drawable/p5"
+            android:src="@drawable/kingmu"
             app:borderRadius="40dp"
             app:type="round" >
         </app.nvgtor.com.leanrning.customViews.roundImageView.RoundImageView>
@@ -54,7 +54,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:src="@drawable/p6"
+            android:src="@drawable/kingmu"
             app:borderRadius="60dp"
             app:type="round" >
         </app.nvgtor.com.leanrning.customViews.roundImageView.RoundImageView>
