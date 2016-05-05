@@ -4,7 +4,7 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="navigation_book">例子</string>
+    <string name="navigation_book">搜索书籍</string>
     <string name="navigation_example">控件</string>
     <string name="navigation_my_blog">博客</string>
     <string name="navigation_about">关于</string>
@@ -17,6 +17,7 @@
     <string name="search">搜索</string>
     <string name="input_hint">请输入关键字</string>
     <string name="input_prefill"></string>
-    <string name="default_search_keyword">花千骨</string>
+    <string name="default_search_keyword">龙族</string>
+    <string name="title_buttom_tab">Buttom Tab</string>
 
 </resources>

@@ -1,5 +1,6 @@
 package app.nvgtor.com.leanrning.features.mdbook;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
@@ -8,16 +9,15 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import app.nvgtor.com.leanrning.R;
 import app.nvgtor.com.leanrning.features.mdbook.book.BooksFragment;
+import app.nvgtor.com.leanrning.features.mdbook.example.BottomTabActivity;
 import app.nvgtor.com.leanrning.features.mdbook.widget.BackHandledFragment;
-import butterknife.Bind;
-import butterknife.ButterKnife;
 
 /**
  * Created by nvgtor on 2016/4/25.
@@ -25,14 +25,9 @@ import butterknife.ButterKnife;
 public class BookHomeActivity extends AppCompatActivity implements BackHandledFragment
         .BackHandlerInterface{
 
-    @Bind(R.id.toolbar)
-    Toolbar toolbar;
-    @Bind(R.id.frame_content)
-    FrameLayout frameContent;
-    @Bind(R.id.navigation_view)
-    NavigationView navigationView;
-    @Bind(R.id.drawer_layout)
-    DrawerLayout drawerLayout;
+    private DrawerLayout mDrawerLayout;
+    private Toolbar mToolbar;
+    private NavigationView mNavigationView;
 
     private ActionBarDrawerToggle mDrawerToggle;
     private BackHandledFragment selectedFragment;
@@ -41,32 +36,35 @@ public class BookHomeActivity extends AppCompatActivity implements BackHandledFr
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_home);
-        ButterKnife.bind(this);
 
-        setSupportActionBar(toolbar);
-        mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.drawer_open,
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.drawer_open,
                 R.string.drawer_close);
         mDrawerToggle.syncState();
-        drawerLayout.addDrawerListener(mDrawerToggle);
+        mDrawerLayout.addDrawerListener(mDrawerToggle);
 
+        mNavigationView = (NavigationView) findViewById(R.id.navigation_view);
         //menu 点击事件
-        setupDrawerContent(navigationView);
+        setupDrawerContent(mNavigationView);
         //代码初始化headerView
         setUpProfileImage();
         //首页
+        mToolbar.setTitle(R.string.navigation_book);
         switchToBook();
     }
 
     private void setUpProfileImage() {
-        View headerView = navigationView.inflateHeaderView(R.layout.book_home_drawer_headview);
+        View headerView = mNavigationView.inflateHeaderView(R.layout.book_home_drawer_headview);
         View profileView = headerView.findViewById(R.id.profile_image);
         if (profileView != null) {
             profileView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     switchToBlog();
-                    drawerLayout.closeDrawers();
-                    navigationView.getMenu().getItem(1).setChecked(true);
+                    mDrawerLayout.closeDrawers();
+                    mNavigationView.getMenu().getItem(1).setChecked(true);
                 }
             });
         }
@@ -93,27 +91,29 @@ public class BookHomeActivity extends AppCompatActivity implements BackHandledFr
                         break;
                 }
                 item.setChecked(true);
-                drawerLayout.closeDrawers();
+                mDrawerLayout.closeDrawers();
                 return true;
             }
         });
     }
 
     private void switchToAbout() {
-
+        mToolbar.setTitle(R.string.navigation_about);
     }
 
     private void switchToBlog() {
-
+        mToolbar.setTitle(R.string.navigation_my_blog);
     }
 
     private void switchToExample() {
-
+        mToolbar.setTitle(R.string.navigation_example);
+        Intent intent = new Intent(this, BottomTabActivity.class);
+        startActivity(intent);
     }
 
     private void switchToBook() {
         getSupportFragmentManager().beginTransaction().replace(R.id.frame_content, new BooksFragment()).commit();
-        toolbar.setTitle(R.string.navigation_book);
+        mToolbar.setTitle(R.string.navigation_book);
     }
 
     @Override
@@ -135,11 +135,28 @@ public class BookHomeActivity extends AppCompatActivity implements BackHandledFr
     @Override
     public void onBackPressed() {
         if (selectedFragment == null || !selectedFragment.onBackPressed()) {
-            if (drawerLayout.isDrawerOpen(Gravity.LEFT)) {
-                drawerLayout.closeDrawer(Gravity.LEFT);
+            if (mDrawerLayout.isDrawerOpen(Gravity.LEFT)) {
+                mDrawerLayout.closeDrawer(Gravity.LEFT);
             } else {
-                doExitApp();
+                //doExitApp();
+                finish();
             }
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

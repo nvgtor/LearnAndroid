@@ -1,8 +1,11 @@
 package app.nvgtor.com.leanrning.features.mdbook.book;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,6 +23,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import java.util.List;
 
 import app.nvgtor.com.leanrning.R;
+import app.nvgtor.com.leanrning.features.mdbook.BookDetailActivity;
 import app.nvgtor.com.leanrning.features.mdbook.widget.RecyclerItemClickListener;
 
 /**
@@ -43,6 +47,7 @@ public class BooksFragment extends Fragment {
         mProgressBar = (ProgressBar) view.findViewById(R.id.progressBar);
         mFabButton = (FloatingActionButton) view.findViewById(R.id.fab_normal);
 
+        //RecyclerView 优化
         mRecyclerView.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(linearLayoutManager);
@@ -116,7 +121,14 @@ public class BooksFragment extends Fragment {
             = new RecyclerItemClickListener.OnItemClickListener() {
         @Override
         public void onItemClick(View view, int position) {
+            Book book = mAdapter.getBook(position);
+            Intent intent = new Intent(getActivity(), BookDetailActivity.class);
+            intent.putExtra("book", book);
 
+            ActivityOptionsCompat options =
+                    ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(),
+                            view.findViewById(R.id.ivBook), getString(R.string.transition_book_img));
+            ActivityCompat.startActivity(getActivity(), intent, options.toBundle());
         }
     };
 

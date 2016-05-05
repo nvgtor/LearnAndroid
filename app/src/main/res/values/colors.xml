@@ -150,4 +150,7 @@
     <color name="primary_text">#212121</color>
     <color name="secondary_text">#727272</color>
     <color name="window_background">#FFF5F5F5</color>
+    <color name="primary">#009688</color>
+
+    <color name="tab_bgcolor">#eeeeee</color>
 </resources>
