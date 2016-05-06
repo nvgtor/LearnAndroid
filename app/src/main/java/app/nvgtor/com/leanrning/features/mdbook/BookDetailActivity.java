@@ -21,7 +21,6 @@ import java.util.List;
 import app.nvgtor.com.leanrning.R;
 import app.nvgtor.com.leanrning.features.mdbook.book.Book;
 import app.nvgtor.com.leanrning.features.mdbook.widget.DetailFragment;
-import butterknife.ButterKnife;
 
 /**
  * Created by nvgtor on 2016/5/4.
@@ -35,7 +34,6 @@ public class BookDetailActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mbook_detail);
-        ButterKnife.bind(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

@@ -25,7 +25,7 @@
         <activity android:name=".view.NumberRollingActivity"/>
         <activity android:name=".view.CustomActivity"/>
         <activity android:name=".view.PointAnimActivity"/>
-        <activity android:name=".view.ViewPagerIndicatorActivity"/>
+        <activity android:name=".features.mNews.NewsVPIndicatorActivity"/>
         <activity android:name=".view.TestLifeOfActivity"/>
         <activity android:name=".view.HomeActivity"
                   android:theme="@style/AppTheme.NoActionBar"/>
@@ -39,6 +39,9 @@
                   android:theme="@style/DrawerLayoutTheme"/>
 
         <activity android:name=".features.mdbook.example.BottomTabActivity"
+                  android:theme="@style/DrawerLayoutTheme"/>
+
+        <activity android:name=".features.mNews.NewsDetailActivity"
                   android:theme="@style/DrawerLayoutTheme"/>
 
         <activity android:name=".customViews.roundImageView.RoundImgActivity"/>

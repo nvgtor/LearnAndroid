@@ -16,6 +16,7 @@ import java.util.List;
 
 import app.nvgtor.com.leanrning.R;
 import app.nvgtor.com.leanrning.customViews.roundImageView.RoundImgActivity;
+import app.nvgtor.com.leanrning.features.mNews.NewsVPIndicatorActivity;
 import app.nvgtor.com.leanrning.features.mdbook.BookHomeActivity;
 import app.nvgtor.com.leanrning.otherTest.GestureDetectorTest.GestureDetectorActivity;
 import app.nvgtor.com.leanrning.utils.PxToDpUtil;
@@ -102,7 +103,7 @@ public class ViewPagerGalleryActivity extends AppCompatActivity implements Scale
     public void onPageClickListener(int position) {
         switch (position){
             case 0:
-                toHomeActivity();
+                toNewsActivity();
                 break;
             case 1:
                 toBookActivity();
@@ -114,10 +115,17 @@ public class ViewPagerGalleryActivity extends AppCompatActivity implements Scale
                 toGestureActivity();
                 break;
             case 4:
+                toHomeActivity();
                 break;
             case 5:
+                toHomeActivity();
                 break;
         }
+    }
+
+    private void toNewsActivity() {
+        Intent intent = new Intent(this, NewsVPIndicatorActivity.class);
+        startActivity(intent);
     }
 
     private void toGestureActivity() {

@@ -7,7 +7,6 @@ import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -152,7 +151,7 @@ public class ScaleYViewPager extends ViewPager {
             view.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(getContext(), "i'm" + position + "pager", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getContext(), "i'm" + position + "pager", Toast.LENGTH_SHORT).show();
                     viewPagerOnClickListener.onPageClickListener(position);
                 }
             });

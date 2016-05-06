@@ -1,4 +1,4 @@
-package app.nvgtor.com.leanrning.view;
+package app.nvgtor.com.leanrning.features.mNews;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -17,13 +17,12 @@ import app.nvgtor.com.leanrning.customViews.ViewPagerIndicator.ViewPagerIndicato
 /**
  * Created by nvgtor on 2016/3/28.
  */
-public class ViewPagerIndicatorActivity extends FragmentActivity {
+public class NewsVPIndicatorActivity extends FragmentActivity {
     private List<Fragment> mTabContents = new ArrayList<Fragment>();
     private FragmentPagerAdapter mAdapter;
     private ViewPager mViewPager;
-    private List<String> mDatas = Arrays.asList("短信1", "短信2", "短信3", "短信4",
-            "短信5", "短信6", "短信7", "短信8", "短信9");
-//	private List<String> mDatas = Arrays.asList("短信", "收藏", "推荐");
+    private List<String> mDatas = Arrays.asList("天大要闻", "公告", "社团风采", "院系动态",
+            "视点观察");
 
     private ViewPagerIndicator mIndicator;
 
@@ -44,17 +43,13 @@ public class ViewPagerIndicatorActivity extends FragmentActivity {
 
     }
 
-    private void initDatas()
-    {
-
-        for (String data : mDatas)
-        {
-            VpSimpleFragment fragment = VpSimpleFragment.newInstance(data);
+    private void initDatas() {
+        for (int i = 0; i < mDatas.size(); i++){
+            NewsListFragment fragment = NewsListFragment.newInstance(mDatas.get(i), i+1);
             mTabContents.add(fragment);
         }
 
-        mAdapter = new FragmentPagerAdapter(getSupportFragmentManager())
-        {
+        mAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
             public int getCount()
             {
@@ -69,8 +64,7 @@ public class ViewPagerIndicatorActivity extends FragmentActivity {
         };
     }
 
-    private void initView()
-    {
+    private void initView() {
         mViewPager = (ViewPager) findViewById(R.id.id_vp);
         mIndicator = (ViewPagerIndicator) findViewById(R.id.id_indicator);
     }

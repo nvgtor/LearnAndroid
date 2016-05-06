@@ -27,6 +27,7 @@ import com.github.florent37.viewanimator.ViewAnimator;
 import java.util.Locale;
 
 import app.nvgtor.com.leanrning.R;
+import app.nvgtor.com.leanrning.features.mNews.NewsVPIndicatorActivity;
 import app.nvgtor.com.leanrning.view.threeD.rotate3dpic.Rotate3dActivity;
 import app.nvgtor.com.leanrning.view.threeD.threeDSliding.ThreeDSlidingActivity;
 import app.nvgtor.com.leanrning.view.viewPagerGallery.ViewPagerGalleryActivity;
@@ -252,7 +253,7 @@ public class HomeActivity extends AppCompatActivity implements
                 startActivity(intent2);
                 break;
             case R.id.nav_vp_indicator:
-                Intent vpIndicatorIntent = new Intent(this, ViewPagerIndicatorActivity.class);
+                Intent vpIndicatorIntent = new Intent(this, NewsVPIndicatorActivity.class);
                 startActivity(vpIndicatorIntent);
                 break;
             case R.id.nav_rotate:

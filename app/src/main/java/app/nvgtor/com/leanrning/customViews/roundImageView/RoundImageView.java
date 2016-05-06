@@ -14,7 +14,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
 import android.widget.ImageView;
 
@@ -90,7 +89,7 @@ public class RoundImageView extends ImageView{
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        Log.e("TAG", "onMeasure");
+        //Log.e("TAG", "onMeasure");
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
         /**
