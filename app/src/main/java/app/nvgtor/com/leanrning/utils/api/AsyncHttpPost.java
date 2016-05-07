@@ -3,7 +3,6 @@ package app.nvgtor.com.leanrning.utils.api;
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -12,10 +11,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Type;
-import java.util.List;
-
-import app.nvgtor.com.leanrning.features.mNews.model.News;
 import app.nvgtor.com.leanrning.features.mNews.model.NewsDetail;
 import cz.msebera.android.httpclient.Header;
 
@@ -46,11 +41,8 @@ public class AsyncHttpPost {
                     try {
                         JSONArray jsonArray = new JSONArray(new String(responseBody));
                         Log.d("JsonArray", jsonArray.toString());
-                        Gson gson = new Gson();
-                        Type type = new TypeToken<List<News>>() {}.getType();
-                        List<News> newsLists = gson.fromJson(jsonArray.toString(), type);
                         if (listenner != null) {
-                            listenner.onFinish(newsLists);
+                            listenner.onFinish(jsonArray);
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();

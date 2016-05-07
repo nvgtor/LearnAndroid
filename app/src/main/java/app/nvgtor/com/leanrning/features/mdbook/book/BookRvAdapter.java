@@ -105,6 +105,7 @@ public class BookRvAdapter extends RecyclerView.Adapter<BookRvAdapter.ViewHolder
     public void updateItems(List<Book> books, boolean animated) {
         animateItems = animated;
         lastAnimatedPosition = -1;
+        mBooks.clear();
         mBooks.addAll(books);
         notifyDataSetChanged();
     }

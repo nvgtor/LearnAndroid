@@ -17,6 +17,7 @@ import app.nvgtor.com.leanrning.R;
 import app.nvgtor.com.leanrning.features.mNews.model.News;
 import app.nvgtor.com.leanrning.utils.api.AsyncHttpPost;
 import app.nvgtor.com.leanrning.utils.api.HttpCallbackDetailListenner;
+import app.nvgtor.com.leanrning.utils.netUtils.NetStates;
 
 /**
  * Created by nvgtor on 2016/5/6.
@@ -67,20 +68,23 @@ public class NewsDetailActivity extends AppCompatActivity {
                     .into(ivImage);
         }
 
-        AsyncHttpPost.PostNewsDetail(index, new HttpCallbackDetailListenner() {
-            @Override
-            public void onFinish(String content) {
-                mWebView.loadData(content, "text/html; charset=UTF-8", null);
-                mGoogleProgressBar.setVisibility(View.GONE);
-            }
+        if (NetStates.isNetworkAvailable(this)){
+            AsyncHttpPost.PostNewsDetail(index, new HttpCallbackDetailListenner() {
+                @Override
+                public void onFinish(String content) {
+                    mWebView.loadData(content, "text/html; charset=UTF-8", null);
+                    mGoogleProgressBar.setVisibility(View.GONE);
+                }
 
-            @Override
-            public void onErrer(String error) {
-                Toast.makeText(NewsDetailActivity.this, error, Toast.LENGTH_SHORT).show();
-                mGoogleProgressBar.setVisibility(View.GONE);
-            }
-        });
-
-
+                @Override
+                public void onErrer(String error) {
+                    Toast.makeText(NewsDetailActivity.this, error, Toast.LENGTH_SHORT).show();
+                    mGoogleProgressBar.setVisibility(View.GONE);
+                }
+            });
+        } else {
+            mGoogleProgressBar.setVisibility(View.GONE);
+            Toast.makeText(this, "当前没有网络连接！", Toast.LENGTH_SHORT).show();
+        }
     }
 }

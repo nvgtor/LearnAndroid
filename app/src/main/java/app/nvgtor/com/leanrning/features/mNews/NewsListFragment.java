@@ -10,10 +10,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import com.jpardogo.android.googleprogressbar.library.GoogleProgressBar;
 
+import org.json.JSONArray;
+
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +27,8 @@ import app.nvgtor.com.leanrning.features.mNews.model.News;
 import app.nvgtor.com.leanrning.features.mdbook.widget.RecyclerItemClickListener;
 import app.nvgtor.com.leanrning.utils.api.AsyncHttpPost;
 import app.nvgtor.com.leanrning.utils.api.HttpCallbackListenner;
+import app.nvgtor.com.leanrning.utils.cache.ACache;
+import app.nvgtor.com.leanrning.utils.netUtils.NetStates;
 
 /**
  * Created by nvgtor on 2016/3/28.
@@ -34,10 +41,23 @@ public class NewsListFragment extends Fragment {
     private int type;
     private int page = 0;
     private List<News> newsList;
+    private String[] mCacheKey = {"newsTJUyaowen", "newsTJUgonggao", "newsTJUshetuan",
+                                    "newsTJUyuanxi", "newsTJUshidian"};
 
     private XRecyclerView mRecyclerView;
     private NewsListAdapter adapter;
     GoogleProgressBar mGoogleProgressBar;
+
+    private ACache mCache;
+
+    public static NewsListFragment newInstance(String title, int type) {
+        Bundle bundle = new Bundle();
+        bundle.putString(BUNDLE_TITLE, title);
+        bundle.putInt(BUNDLE_TYPE, type);
+        NewsListFragment fragment = new NewsListFragment();
+        fragment.setArguments(bundle);
+        return fragment;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -61,6 +81,8 @@ public class NewsListFragment extends Fragment {
         adapter = new NewsListAdapter(getActivity());
         mRecyclerView.setAdapter(adapter);
 
+        mCache = ACache.get(getActivity());
+
         Bundle arguments = getArguments();
         if (arguments != null) {
             mTitle = arguments.getString(BUNDLE_TITLE);
@@ -71,12 +93,23 @@ public class NewsListFragment extends Fragment {
        mRecyclerView.setLoadingListener(new XRecyclerView.LoadingListener() {
            @Override
            public void onRefresh() {
-               refreshData(0);
+               if (NetStates.isNetworkAvailable(getActivity())){
+                   refreshData(0);
+               } else {
+                   Toast.makeText(getActivity(), "当前没有网络连接！", Toast.LENGTH_SHORT).show();
+                   mRecyclerView.refreshComplete();
+               }
            }
 
            @Override
            public void onLoadMore() {
-               loadMoreData(++page);
+               if (NetStates.isNetworkAvailable(getActivity())){
+                   loadMoreData(++page);
+               } else {
+                   Toast.makeText(getActivity(), "当前没有网络连接！", Toast.LENGTH_SHORT).show();
+                   mRecyclerView.loadMoreComplete();
+               }
+
            }
        });
 
@@ -95,34 +128,72 @@ public class NewsListFragment extends Fragment {
         }
     };
 
-    private void initData(int page) {
-        AsyncHttpPost.PostNewsList(page, type, new HttpCallbackListenner() {
-            @Override
-            public void onFinish(List<News> response) {
-                if (response != null && response.size() > 0){
-                    newsList.clear();
-                    newsList.addAll(response);
-                    adapter.updateList(newsList);
-                } else {
-                    Toast.makeText(getActivity(), "获取数据失败", Toast.LENGTH_SHORT).show();
-                }
-                mRecyclerView.refreshComplete();
-                mGoogleProgressBar.setVisibility(View.GONE);
-            }
+    public void saveCache(JSONArray jsonArray) {
+        mCache.put(mCacheKey[type-1], jsonArray);
+    }
 
-            @Override
-            public void onErrer(String error) {
-                Toast.makeText(getActivity(), error, Toast.LENGTH_SHORT).show();
-                mRecyclerView.refreshComplete();
-                mGoogleProgressBar.setVisibility(View.GONE);
+
+    public void readCache(String cacheKey) {
+        JSONArray jsonArray = mCache.getAsJSONArray(cacheKey);
+        if (jsonArray == null) {
+            Toast.makeText(getActivity(), "JSONArray cache is null ...",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        } else {
+            Gson gson = new Gson();
+            Type type = new TypeToken<List<News>>() {}.getType();
+            List<News> response = gson.fromJson(jsonArray.toString(), type);
+            if (response != null && response.size() > 0){
+                newsList.clear();
+                newsList.addAll(response);
+                adapter.updateList(newsList);
+            } else {
+                Toast.makeText(getActivity(), "缓存数据解析失败", Toast.LENGTH_SHORT).show();
             }
-        });
+            mGoogleProgressBar.setVisibility(View.GONE);
+        }
+    }
+
+    private void initData(int page) {
+        if (NetStates.isNetworkAvailable(getActivity())){
+            AsyncHttpPost.PostNewsList(page, type, new HttpCallbackListenner() {
+                @Override
+                public void onFinish(JSONArray jsonArray) {
+                    saveCache(jsonArray);
+                    Gson gson = new Gson();
+                    Type type = new TypeToken<List<News>>() {}.getType();
+                    List<News> response = gson.fromJson(jsonArray.toString(), type);
+                    if (response != null && response.size() > 0){
+                        newsList.clear();
+                        newsList.addAll(response);
+                        adapter.updateList(newsList);
+                    } else {
+                        Toast.makeText(getActivity(), "获取数据失败", Toast.LENGTH_SHORT).show();
+                    }
+                    mGoogleProgressBar.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onErrer(String error) {
+                    Toast.makeText(getActivity(), error, Toast.LENGTH_SHORT).show();
+                    mRecyclerView.refreshComplete();
+                    mGoogleProgressBar.setVisibility(View.GONE);
+                }
+            });
+        } else {
+            readCache(mCacheKey[type-1]);
+            mGoogleProgressBar.setVisibility(View.GONE);
+            //Toast.makeText(getActivity(), "当前没有网络连接,读取缓存！", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void refreshData(int page){
         AsyncHttpPost.PostNewsList(page, type, new HttpCallbackListenner() {
             @Override
-            public void onFinish(List<News> response) {
+            public void onFinish(JSONArray jsonArray) {
+                Gson gson = new Gson();
+                Type type = new TypeToken<List<News>>() {}.getType();
+                List<News> response = gson.fromJson(jsonArray.toString(), type);
                 if (response != null && response.size() > 0){
                     newsList.clear();
                     newsList.addAll(response);
@@ -139,12 +210,16 @@ public class NewsListFragment extends Fragment {
                 mRecyclerView.refreshComplete();
             }
         });
+
     }
 
     private void loadMoreData(int page){
         AsyncHttpPost.PostNewsList(page, type, new HttpCallbackListenner() {
             @Override
-            public void onFinish(List<News> response) {
+            public void onFinish(JSONArray jsonArray) {
+                Gson gson = new Gson();
+                Type type = new TypeToken<List<News>>() {}.getType();
+                List<News> response = gson.fromJson(jsonArray.toString(), type);
                 if (response != null && response.size() > 0){
                     newsList.addAll(response);
                     adapter.updateList(newsList);
@@ -160,15 +235,6 @@ public class NewsListFragment extends Fragment {
                 mRecyclerView.loadMoreComplete();
             }
         });
-    }
-
-    public static NewsListFragment newInstance(String title, int type) {
-        Bundle bundle = new Bundle();
-        bundle.putString(BUNDLE_TITLE, title);
-        bundle.putInt(BUNDLE_TYPE, type);
-        NewsListFragment fragment = new NewsListFragment();
-        fragment.setArguments(bundle);
-        return fragment;
     }
 }
 
