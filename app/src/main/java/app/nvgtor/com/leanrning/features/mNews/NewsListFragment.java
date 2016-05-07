@@ -5,12 +5,16 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.jcodecraeer.xrecyclerview.ProgressStyle;
+import com.jcodecraeer.xrecyclerview.XRecyclerView;
+import com.jpardogo.android.googleprogressbar.library.GoogleProgressBar;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import app.nvgtor.com.leanrning.R;
@@ -28,29 +32,53 @@ public class NewsListFragment extends Fragment {
     public static final String BUNDLE_TYPE = "news_type";
     private String mTitle = "DefaultValue";
     private int type;
+    private int page = 0;
     private List<News> newsList;
 
-    private RecyclerView recyclerView;
+    private XRecyclerView mRecyclerView;
     private NewsListAdapter adapter;
+    GoogleProgressBar mGoogleProgressBar;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_news_list, null, false);
-        recyclerView = (RecyclerView) view.findViewById(R.id.news_list_rv);
+        mRecyclerView = (XRecyclerView) view.findViewById(R.id.news_list_rv);
+        mGoogleProgressBar = (GoogleProgressBar) view.findViewById(R.id.google_progress);
+        mGoogleProgressBar.setVisibility(View.VISIBLE);
+
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getActivity(),
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        mRecyclerView.setLayoutManager(linearLayoutManager);
+        mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getActivity(),
                 onItemClickListener));
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+
+        mRecyclerView.setRefreshProgressStyle(ProgressStyle.BallSpinFadeLoader);
+        mRecyclerView.setLoadingMoreProgressStyle(ProgressStyle.BallPulse);
+
+        newsList = new ArrayList<News>();
+        adapter = new NewsListAdapter(getActivity());
+        mRecyclerView.setAdapter(adapter);
 
         Bundle arguments = getArguments();
         if (arguments != null) {
             mTitle = arguments.getString(BUNDLE_TITLE);
             type = arguments.getInt(BUNDLE_TYPE);
-            initData();
+            initData(0);
         }
 
+       mRecyclerView.setLoadingListener(new XRecyclerView.LoadingListener() {
+           @Override
+           public void onRefresh() {
+               refreshData(0);
+           }
+
+           @Override
+           public void onLoadMore() {
+               loadMoreData(++page);
+           }
+       });
 
         return view;
     }
@@ -67,18 +95,69 @@ public class NewsListFragment extends Fragment {
         }
     };
 
-    private void initData() {
-        AsyncHttpPost.PostNewsList(0, type, new HttpCallbackListenner() {
+    private void initData(int page) {
+        AsyncHttpPost.PostNewsList(page, type, new HttpCallbackListenner() {
             @Override
             public void onFinish(List<News> response) {
-                newsList = response;
-                adapter = new NewsListAdapter(getActivity(), newsList);
-                recyclerView.setAdapter(adapter);
+                if (response != null && response.size() > 0){
+                    newsList.clear();
+                    newsList.addAll(response);
+                    adapter.updateList(newsList);
+                } else {
+                    Toast.makeText(getActivity(), "获取数据失败", Toast.LENGTH_SHORT).show();
+                }
+                mRecyclerView.refreshComplete();
+                mGoogleProgressBar.setVisibility(View.GONE);
             }
 
             @Override
             public void onErrer(String error) {
                 Toast.makeText(getActivity(), error, Toast.LENGTH_SHORT).show();
+                mRecyclerView.refreshComplete();
+                mGoogleProgressBar.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    private void refreshData(int page){
+        AsyncHttpPost.PostNewsList(page, type, new HttpCallbackListenner() {
+            @Override
+            public void onFinish(List<News> response) {
+                if (response != null && response.size() > 0){
+                    newsList.clear();
+                    newsList.addAll(response);
+                    adapter.updateList(newsList);
+                } else {
+                    Toast.makeText(getActivity(), "获取数据失败", Toast.LENGTH_SHORT).show();
+                }
+                mRecyclerView.refreshComplete();
+            }
+
+            @Override
+            public void onErrer(String error) {
+                Toast.makeText(getActivity(), error, Toast.LENGTH_SHORT).show();
+                mRecyclerView.refreshComplete();
+            }
+        });
+    }
+
+    private void loadMoreData(int page){
+        AsyncHttpPost.PostNewsList(page, type, new HttpCallbackListenner() {
+            @Override
+            public void onFinish(List<News> response) {
+                if (response != null && response.size() > 0){
+                    newsList.addAll(response);
+                    adapter.updateList(newsList);
+                    mRecyclerView.loadMoreComplete();
+                } else {
+                    mRecyclerView.noMoreLoading();
+                }
+            }
+
+            @Override
+            public void onErrer(String error) {
+                Toast.makeText(getActivity(), error, Toast.LENGTH_SHORT).show();
+                mRecyclerView.loadMoreComplete();
             }
         });
     }

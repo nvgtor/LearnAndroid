@@ -38,7 +38,7 @@
             android:layout_margin="10dp"
             android:src="@drawable/kingmu"
             app:borderRadius="20dp"
-            app:type="round" >
+            app:roundImgViewType="round" >
         </app.nvgtor.com.leanrning.customViews.roundImageView.RoundImageView>
 
         <app.nvgtor.com.leanrning.customViews.roundImageView.RoundImageView
@@ -47,7 +47,7 @@
             android:layout_margin="10dp"
             android:src="@drawable/kingmu"
             app:borderRadius="40dp"
-            app:type="round" >
+            app:roundImgViewType="round" >
         </app.nvgtor.com.leanrning.customViews.roundImageView.RoundImageView>
 
         <app.nvgtor.com.leanrning.customViews.roundImageView.RoundImageView
@@ -56,7 +56,7 @@
             android:layout_margin="10dp"
             android:src="@drawable/kingmu"
             app:borderRadius="60dp"
-            app:type="round" >
+            app:roundImgViewType="round" >
         </app.nvgtor.com.leanrning.customViews.roundImageView.RoundImageView>
     </LinearLayout>
 

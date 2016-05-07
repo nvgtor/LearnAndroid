@@ -60,7 +60,12 @@ public class AsyncHttpPost {
 
                 @Override
                 public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody, Throwable error) {
-                    listenner.onErrer(responseBody.toString());
+                    if (responseBody != null){
+                        listenner.onErrer(responseBody.toString());
+                    } else if (error != null){
+                        listenner.onErrer(error.toString());
+                    }
+
                 }
             });
 

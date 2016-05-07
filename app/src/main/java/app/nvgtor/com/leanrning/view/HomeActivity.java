@@ -28,6 +28,7 @@ import java.util.Locale;
 
 import app.nvgtor.com.leanrning.R;
 import app.nvgtor.com.leanrning.features.mNews.NewsVPIndicatorActivity;
+import app.nvgtor.com.leanrning.login.view.LoginActivity;
 import app.nvgtor.com.leanrning.view.threeD.rotate3dpic.Rotate3dActivity;
 import app.nvgtor.com.leanrning.view.threeD.threeDSliding.ThreeDSlidingActivity;
 import app.nvgtor.com.leanrning.view.viewPagerGallery.ViewPagerGalleryActivity;
@@ -237,7 +238,7 @@ public class HomeActivity extends AppCompatActivity implements
     public boolean onNavigationItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.nav_aty_life:
-                Intent lifeAty = new Intent(this, TestLifeOfActivity.class);
+                Intent lifeAty = new Intent(this, LoginActivity.class);
                 startActivity(lifeAty);
                 break;
             case R.id.nav_number_roll:

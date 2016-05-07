@@ -8,8 +8,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.jpardogo.android.googleprogressbar.library.GoogleProgressBar;
 
 import app.nvgtor.com.leanrning.R;
 import app.nvgtor.com.leanrning.features.mNews.model.News;
@@ -21,13 +23,14 @@ import app.nvgtor.com.leanrning.utils.api.HttpCallbackDetailListenner;
  */
 public class NewsDetailActivity extends AppCompatActivity {
 
-    private Toolbar mToolbar;
     private WebView mWebView;
     private News news;
     private String index;
     private int type = -1;
     private int[] imgIds = {R.drawable.img_02, R.drawable.img_03,R.drawable.img_04,
             R.drawable.img_05,R.drawable.img_06};
+
+    private GoogleProgressBar mGoogleProgressBar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,6 +49,8 @@ public class NewsDetailActivity extends AppCompatActivity {
         });
 
         mWebView = (WebView) findViewById(R.id.news_detail_webv);
+        mGoogleProgressBar = (GoogleProgressBar) findViewById(R.id.google_progress);
+        mGoogleProgressBar.setVisibility(View.VISIBLE);
 
         news = (News) getIntent().getSerializableExtra("news");
         index = news.getIndex();
@@ -66,11 +71,13 @@ public class NewsDetailActivity extends AppCompatActivity {
             @Override
             public void onFinish(String content) {
                 mWebView.loadData(content, "text/html; charset=UTF-8", null);
+                mGoogleProgressBar.setVisibility(View.GONE);
             }
 
             @Override
             public void onErrer(String error) {
-
+                Toast.makeText(NewsDetailActivity.this, error, Toast.LENGTH_SHORT).show();
+                mGoogleProgressBar.setVisibility(View.GONE);
             }
         });
 

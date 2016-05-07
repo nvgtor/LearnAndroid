@@ -52,13 +52,13 @@
     </declare-styleable>
     
     <attr name="borderRadius" format="dimension"/>
-    <attr name="type">
+    <attr name="roundImgViewType">
         <enum name="circle" value="0"/>
         <enum name="round" value="1" />
     </attr>
     <declare-styleable name="RoundImageView">
         <attr name="borderRadius" />
-        <attr name="type" />
+        <attr name="roundImgViewType" />
     </declare-styleable>
 
 </resources>

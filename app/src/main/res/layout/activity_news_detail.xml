@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout
-xmlns:android="http://schemas.android.com/apk/res/android"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-android:fitsSystemWindows="true">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:gpb="http://schemas.android.com/apk/res-auto"
+    android:fitsSystemWindows="true">
 
 <android.support.design.widget.AppBarLayout
     android:layout_width="match_parent"
@@ -47,11 +48,24 @@ android:fitsSystemWindows="true">
     android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <WebView
-        android:id="@+id/news_detail_webv"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    </WebView>
+        android:layout_height="match_parent">
+
+        <com.jpardogo.android.googleprogressbar.library.GoogleProgressBar
+            android:id="@+id/google_progress"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            gpb:type="chrome_floating_circles"/>
+
+        <WebView
+            android:id="@+id/news_detail_webv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </WebView>
+
+    </FrameLayout>
 
 </android.support.v4.widget.NestedScrollView>
 

@@ -15,10 +15,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.OvershootInterpolator;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.jpardogo.android.googleprogressbar.library.GoogleProgressBar;
 
 import java.util.List;
 
@@ -32,7 +32,7 @@ import app.nvgtor.com.leanrning.features.mdbook.widget.RecyclerItemClickListener
 public class BooksFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
-    private ProgressBar mProgressBar;
+    private GoogleProgressBar mProgressBar;
     private FloatingActionButton mFabButton;
 
     private BookRvAdapter mAdapter;
@@ -43,8 +43,9 @@ public class BooksFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle
             savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_books, null);
+
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
-        mProgressBar = (ProgressBar) view.findViewById(R.id.progressBar);
+        mProgressBar = (GoogleProgressBar) view.findViewById(R.id.google_progress);
         mFabButton = (FloatingActionButton) view.findViewById(R.id.fab_normal);
 
         //RecyclerView 优化
