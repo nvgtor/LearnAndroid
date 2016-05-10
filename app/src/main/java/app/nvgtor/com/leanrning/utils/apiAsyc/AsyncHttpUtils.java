@@ -1,4 +1,4 @@
-package app.nvgtor.com.leanrning.utils.api;
+package app.nvgtor.com.leanrning.utils.apiAsyc;
 
 import android.util.Log;
 
@@ -16,8 +16,10 @@ import cz.msebera.android.httpclient.Header;
 
 /**
  * Created by nvgtor on 2015/5/27.
+ *
+ * AsyncHttp
  */
-public class AsyncHttpPost {
+public class AsyncHttpUtils {
 
     private static String url = "http://push-mobile.twtapps.net/content/list";
     private static final String urlDetail = "http://push-mobile.twtapps.net/content/detail";

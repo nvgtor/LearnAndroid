@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import com.google.gson.reflect.TypeToken;
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import com.jpardogo.android.googleprogressbar.library.GoogleProgressBar;
+import com.zhy.http.okhttp.OkHttpUtils;
 
 import org.json.JSONArray;
 
@@ -23,12 +25,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import app.nvgtor.com.leanrning.R;
+import app.nvgtor.com.leanrning.features.mNews.callback.ListNewsCallback;
 import app.nvgtor.com.leanrning.features.mNews.model.News;
 import app.nvgtor.com.leanrning.features.mdbook.widget.RecyclerItemClickListener;
-import app.nvgtor.com.leanrning.utils.api.AsyncHttpPost;
-import app.nvgtor.com.leanrning.utils.api.HttpCallbackListenner;
+import app.nvgtor.com.leanrning.utils.apiAsyc.AsyncHttpUtils;
+import app.nvgtor.com.leanrning.utils.apiAsyc.HttpCallbackListenner;
 import app.nvgtor.com.leanrning.utils.cache.ACache;
 import app.nvgtor.com.leanrning.utils.netUtils.NetStates;
+import okhttp3.Call;
 
 /**
  * Created by nvgtor on 2016/3/28.
@@ -132,7 +136,6 @@ public class NewsListFragment extends Fragment {
         mCache.put(mCacheKey[type-1], jsonArray);
     }
 
-
     public void readCache(String cacheKey) {
         JSONArray jsonArray = mCache.getAsJSONArray(cacheKey);
         if (jsonArray == null) {
@@ -155,8 +158,63 @@ public class NewsListFragment extends Fragment {
     }
 
     private void initData(int page) {
+        getDataWithAsycHtttp(page);
+        //getDataByOkHttp(page);
+    }
+
+    private void refreshData(int page){
+        AsyncHttpUtils.PostNewsList(page, type, new HttpCallbackListenner() {
+            @Override
+            public void onFinish(JSONArray jsonArray) {
+                Gson gson = new Gson();
+                Type type = new TypeToken<List<News>>() {}.getType();
+                List<News> response = gson.fromJson(jsonArray.toString(), type);
+                if (response != null && response.size() > 0){
+                    newsList.clear();
+                    newsList.addAll(response);
+                    adapter.updateList(newsList);
+                } else {
+                    Toast.makeText(getActivity(), "获取数据失败", Toast.LENGTH_SHORT).show();
+                }
+                mRecyclerView.refreshComplete();
+            }
+
+            @Override
+            public void onErrer(String error) {
+                Toast.makeText(getActivity(), error, Toast.LENGTH_SHORT).show();
+                mRecyclerView.refreshComplete();
+            }
+        });
+
+    }
+
+    private void loadMoreData(int page){
+        AsyncHttpUtils.PostNewsList(page, type, new HttpCallbackListenner() {
+            @Override
+            public void onFinish(JSONArray jsonArray) {
+                Gson gson = new Gson();
+                Type type = new TypeToken<List<News>>() {}.getType();
+                List<News> response = gson.fromJson(jsonArray.toString(), type);
+                if (response != null && response.size() > 0){
+                    newsList.addAll(response);
+                    adapter.updateList(newsList);
+                    mRecyclerView.loadMoreComplete();
+                } else {
+                    mRecyclerView.noMoreLoading();
+                }
+            }
+
+            @Override
+            public void onErrer(String error) {
+                Toast.makeText(getActivity(), error, Toast.LENGTH_SHORT).show();
+                mRecyclerView.loadMoreComplete();
+            }
+        });
+    }
+
+    private void getDataWithAsycHtttp(int page) {
         if (NetStates.isNetworkAvailable(getActivity())){
-            AsyncHttpPost.PostNewsList(page, type, new HttpCallbackListenner() {
+            AsyncHttpUtils.PostNewsList(page, type, new HttpCallbackListenner() {
                 @Override
                 public void onFinish(JSONArray jsonArray) {
                     saveCache(jsonArray);
@@ -187,54 +245,44 @@ public class NewsListFragment extends Fragment {
         }
     }
 
-    private void refreshData(int page){
-        AsyncHttpPost.PostNewsList(page, type, new HttpCallbackListenner() {
-            @Override
-            public void onFinish(JSONArray jsonArray) {
-                Gson gson = new Gson();
-                Type type = new TypeToken<List<News>>() {}.getType();
-                List<News> response = gson.fromJson(jsonArray.toString(), type);
-                if (response != null && response.size() > 0){
-                    newsList.clear();
-                    newsList.addAll(response);
-                    adapter.updateList(newsList);
-                } else {
-                    Toast.makeText(getActivity(), "获取数据失败", Toast.LENGTH_SHORT).show();
+    private void getDataByOkHttp(int page) {
+        String url = "http://push-mobile.twtapps.net/content/list";
+        if (NetStates.isNetworkAvailable(getActivity())){
+            OkHttpUtils
+                    .post()
+                    .url(url)
+                    .addParams("ctype", "news")
+                    .addParams("page", String.valueOf(page))
+                    .addParams("ntype", String.valueOf(type))
+                    .addParams("platform", "android")
+                    .addParams("version", String.valueOf(1.0))
+                    .build()
+            .execute(new ListNewsCallback() {
+                @Override
+                public void onError(Call call, Exception e) {
+                    Toast.makeText(getActivity(), e.toString(), Toast.LENGTH_SHORT).show();
+                    mRecyclerView.refreshComplete();
+                    mGoogleProgressBar.setVisibility(View.GONE);
                 }
-                mRecyclerView.refreshComplete();
-            }
 
-            @Override
-            public void onErrer(String error) {
-                Toast.makeText(getActivity(), error, Toast.LENGTH_SHORT).show();
-                mRecyclerView.refreshComplete();
-            }
-        });
-
-    }
-
-    private void loadMoreData(int page){
-        AsyncHttpPost.PostNewsList(page, type, new HttpCallbackListenner() {
-            @Override
-            public void onFinish(JSONArray jsonArray) {
-                Gson gson = new Gson();
-                Type type = new TypeToken<List<News>>() {}.getType();
-                List<News> response = gson.fromJson(jsonArray.toString(), type);
-                if (response != null && response.size() > 0){
-                    newsList.addAll(response);
-                    adapter.updateList(newsList);
-                    mRecyclerView.loadMoreComplete();
-                } else {
-                    mRecyclerView.noMoreLoading();
+                @Override
+                public void onResponse(List<News> response) {
+                    Log.d("ListNewsCallback", response.toString());
+                    if (response != null && response.size() > 0){
+                        newsList.clear();
+                        newsList.addAll(response);
+                        adapter.updateList(newsList);
+                    } else {
+                        Toast.makeText(getActivity(), "获取数据失败", Toast.LENGTH_SHORT).show();
+                    }
+                    mGoogleProgressBar.setVisibility(View.GONE);
                 }
-            }
-
-            @Override
-            public void onErrer(String error) {
-                Toast.makeText(getActivity(), error, Toast.LENGTH_SHORT).show();
-                mRecyclerView.loadMoreComplete();
-            }
-        });
+            });
+        } else {
+            //readCahe(mCacheKey[type-1]);
+            mGoogleProgressBar.setVisibility(View.GONE);
+            //Toast.makeText(getActivity(), "当前没有网络连接,读取缓存！", Toast.LENGTH_SHORT).show();
+        }
     }
 }
 

@@ -8,16 +8,27 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
+
+import java.io.IOException;
+
 import app.nvgtor.com.leanrning.R;
 import app.nvgtor.com.leanrning.features.mdbook.book.BooksFragment;
 import app.nvgtor.com.leanrning.features.mdbook.example.BottomTabActivity;
 import app.nvgtor.com.leanrning.features.mdbook.widget.BackHandledFragment;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * Created by nvgtor on 2016/4/25.
@@ -37,6 +48,14 @@ public class BookHomeActivity extends AppCompatActivity implements BackHandledFr
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_home);
 
+        /*try {
+            okHttpGet();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }*/
+
+        //okHttpSample();
+
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -53,6 +72,47 @@ public class BookHomeActivity extends AppCompatActivity implements BackHandledFr
         //首页
         mToolbar.setTitle(R.string.navigation_book);
         switchToBook();
+    }
+
+    private void okHttpSample(){
+        String url = "https://api.douban.com/v2/book/search?q=龙族&start=0&end=10";
+        OkHttpUtils
+                .get()
+                .url(url)
+                .addParams("q", "龙族")
+                .addParams("start", String.valueOf(0))
+                .addParams("count", String.valueOf(30))
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e) {
+                        Log.d("hyOkHttpGetError", e.toString());
+                    }
+
+                    @Override
+                    public void onResponse(String response) {
+                        //Log.d("hyOkHttpGet", response);
+                    }
+                });
+    }
+
+    public void okHttpGet() throws IOException {
+        OkHttpClient okHttpClient = new OkHttpClient();
+        //String url = "https://api.douban.com/v2/book/search?q=龙族&start=0&end=10";
+        String url = "http://nvgtor.github.io";
+        Request request = new Request.Builder().url(url).build();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d("okhttpgetFailed", e.toString());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                Log.d("okhttpgetsss", response.body().string());
+            }
+        });
     }
 
     private void setUpProfileImage() {

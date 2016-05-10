@@ -9,8 +9,8 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,9 +18,20 @@ import android.view.animation.OvershootInterpolator;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.jcodecraeer.xrecyclerview.ProgressStyle;
+import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import com.jpardogo.android.googleprogressbar.library.GoogleProgressBar;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import app.nvgtor.com.leanrning.R;
@@ -28,6 +39,7 @@ import app.nvgtor.com.leanrning.features.mdbook.BookDetailActivity;
 import app.nvgtor.com.leanrning.features.mdbook.widget.RecyclerItemClickListener;
 import app.nvgtor.com.leanrning.utils.cache.ACache;
 import app.nvgtor.com.leanrning.utils.netUtils.NetStates;
+import okhttp3.Call;
 
 /**
  * Created by nvgtor on 2016/4/25.
@@ -36,7 +48,7 @@ public class BooksFragment extends Fragment {
 
     private static final String CACHE_KEY = "mBooksCache";
 
-    private RecyclerView mRecyclerView;
+    private XRecyclerView mRecyclerView;
     private GoogleProgressBar mProgressBar;
     private FloatingActionButton mFabButton;
 
@@ -45,13 +57,19 @@ public class BooksFragment extends Fragment {
 
     private ACache mCache;
 
+    List<Book> allBookList = new ArrayList<>();
+    private String keyworlds = "";
+    private int total;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle
             savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_books, null);
 
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
+        mCache = ACache.get(getActivity());
+
+        mRecyclerView = (XRecyclerView) view.findViewById(R.id.recyclerView);
         mProgressBar = (GoogleProgressBar) view.findViewById(R.id.google_progress);
         mFabButton = (FloatingActionButton) view.findViewById(R.id.fab_normal);
 
@@ -66,6 +84,9 @@ public class BooksFragment extends Fragment {
         mAdapter = new BookRvAdapter(getActivity());
         mRecyclerView.setAdapter(mAdapter);
 
+        mRecyclerView.setRefreshProgressStyle(ProgressStyle.BallSpinFadeLoader);
+        mRecyclerView.setLoadingMoreProgressStyle(ProgressStyle.BallPulse);
+
         setUpFAB(view);
 
         return view;
@@ -76,11 +97,37 @@ public class BooksFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         mFabButton.setTranslationY(2 * getResources().getDimensionPixelOffset(R.dimen.btn_fab_size));
         if (NetStates.isNetworkAvailable(getActivity())){
-            doSearch(getString(R.string.default_search_keyword));
+            doSearch(getString(R.string.default_search_keyword), 0, true, false);
         } else {
-            Toast.makeText(getActivity(), "没有连接网络...", Toast.LENGTH_SHORT).show();
-            //readCache(CACHE_KEY);
+            Toast.makeText(getActivity(), "没有连接网络,读取缓存...", Toast.LENGTH_SHORT).show();
+            readCache(CACHE_KEY);
+            mProgressBar.setVisibility(View.GONE);
         }
+
+        mRecyclerView.setLoadingListener(new XRecyclerView.LoadingListener() {
+            int start = 0;
+
+            @Override
+            public void onRefresh() {
+                if (keyworlds != null && !keyworlds.equals(""))
+                    doSearch(keyworlds, 0, false, false);
+                else
+                    doSearch("龙族", 0, false, false);
+            }
+
+            @Override
+            public void onLoadMore() {
+                if (mAdapter.getItemCount() < total){
+                    start += 10;
+                    if (keyworlds != null && !keyworlds.equals(""))
+                        doSearch(keyworlds, start, false, true);
+                    else
+                        doSearch("龙族", start, false, true);
+                } else {
+                    mRecyclerView.noMoreLoading();
+                }
+            }
+        });
 
     }
 
@@ -102,27 +149,44 @@ public class BooksFragment extends Fragment {
         }
     }
 
-    public void saveCache(List<Book> books) {
-        BookList mBookList = new BookList(books);
-        mCache.put(CACHE_KEY, mBookList);
+    public void saveCache(String books) {
+        mCache.put(CACHE_KEY, books);
     }
 
 
     public void readCache(String cacheKey) {
-        BookList mBookList = (BookList) mCache.getAsObject(cacheKey);
-        if (mBookList != null){
-            mProgressBar.setVisibility(View.GONE);
-            startFABAnimation();
-            mAdapter.updateItems(mBookList.getBooks(), true);
+        String bookString = mCache.getAsString(CACHE_KEY);
+        if (bookString != null){
+            JSONObject jsonObject = null;
+            Gson gson = new Gson();
+            try {
+                jsonObject = new JSONObject(bookString);
+                JSONArray jsonArray = jsonObject.getJSONArray("books");
+                List<Book> bookList = gson.fromJson(jsonArray.toString(),
+                        new TypeToken<List<Book>>(){}.getType());
+                mProgressBar.setVisibility(View.GONE);
+                startFABAnimation();
+                mAdapter.updateItems(bookList, true);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         } else {
             Toast.makeText(getActivity(), "cache is null ...", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void doSearch(String keyword) {
-        mProgressBar.setVisibility(View.VISIBLE);
-        mAdapter.clearItems();
-        Book.searchBooks(keyword, new Book.IBookResponse<List<Book>>() {
+    private void doSearch(String keyword, int start, boolean readyCache, boolean flag) {
+        if (readyCache){
+            mProgressBar.setVisibility(View.VISIBLE);
+        } else {
+            mProgressBar.setVisibility(View.GONE);
+        }
+
+        //mAdapter.clearItems();
+
+        searchBooksOkHttp(keyword, start, readyCache, flag);
+
+        /*Book.searchBooks(keyword, new Book.IBookResponse<List<Book>>() {
             @Override
             public void onData(List<Book> books) {
                 if (books != null && books.size() > 0){
@@ -139,7 +203,65 @@ public class BooksFragment extends Fragment {
             public void onFailure(String message) {
                 Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
             }
-        });
+        });*/
+    }
+
+    private void searchBooksOkHttp(String keyword, final int start, final boolean readyCache, final boolean flag) {
+        String url = "https://api.douban.com/v2/book/search";
+        OkHttpUtils
+                .get()
+                .url(url)
+                .addParams("q", keyword)
+                .addParams("start", String.valueOf(start))
+                .addParams("count", String.valueOf(10))
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e) {
+                        Log.d("hyOkHttpGetError", e.toString());
+                        if (flag){
+                            mRecyclerView.loadMoreComplete();
+                        } else {
+                            mRecyclerView.refreshComplete();
+                        }
+                        if (readyCache){
+                            mProgressBar.setVisibility(View.GONE);
+                        }
+                    }
+
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("hyOkHttpGet", response);
+                        if (readyCache){
+                            saveCache(response);
+                            mProgressBar.setVisibility(View.GONE);
+                        }
+                        JSONObject jsonObject = null;
+                        Gson gson = new Gson();
+                        try {
+                            jsonObject = new JSONObject(response);
+                            JSONArray jsonArray = jsonObject.getJSONArray("books");
+                            total = jsonObject.getInt("total");
+                            List<Book> bookList = gson.fromJson(jsonArray.toString(),
+                                    new TypeToken<List<Book>>(){}.getType());
+                            startFABAnimation();
+                            allBookList.addAll(bookList);
+                            if (flag){
+                                mAdapter.updateItems(allBookList, true);
+                            } else {
+                                mAdapter.updateItems(bookList, true);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        if (flag){
+                            mRecyclerView.loadMoreComplete();
+                        } else {
+                            mRecyclerView.refreshComplete();
+                        }
+                    }
+                });
     }
 
     private void startFABAnimation() {
@@ -163,7 +285,8 @@ public class BooksFragment extends Fragment {
                             public void onInput(MaterialDialog dialog, CharSequence input) {
                                 // Do something
                                 if (!TextUtils.isEmpty(input)) {
-                                    doSearch(input.toString());
+                                    doSearch(input.toString(), 20, false, false);
+                                    keyworlds = input.toString();
                                 }
                             }
                         }).show();

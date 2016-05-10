@@ -39,4 +39,6 @@ dependencies {
         transitive = true
     }
     compile 'com.jpardogo.googleprogressbar:library:1.2.0'
+    compile 'com.squareup.okhttp3:okhttp:3.2.0'
+    compile 'com.zhy:okhttputils:2.4.1'
 }

@@ -39,6 +39,10 @@ public class BookRvAdapter extends RecyclerView.Adapter<BookRvAdapter.ViewHolder
         mBackground = mTypedValue.resourceId;
     }
 
+    public List<Book> getmBooks(){
+        return mBooks;
+    }
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(mContext).inflate(R.layout.book_item, parent, false);

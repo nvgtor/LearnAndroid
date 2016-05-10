@@ -15,8 +15,8 @@ import com.jpardogo.android.googleprogressbar.library.GoogleProgressBar;
 
 import app.nvgtor.com.leanrning.R;
 import app.nvgtor.com.leanrning.features.mNews.model.News;
-import app.nvgtor.com.leanrning.utils.api.AsyncHttpPost;
-import app.nvgtor.com.leanrning.utils.api.HttpCallbackDetailListenner;
+import app.nvgtor.com.leanrning.utils.apiAsyc.AsyncHttpUtils;
+import app.nvgtor.com.leanrning.utils.apiAsyc.HttpCallbackDetailListenner;
 import app.nvgtor.com.leanrning.utils.netUtils.NetStates;
 
 /**
@@ -69,7 +69,7 @@ public class NewsDetailActivity extends AppCompatActivity {
         }
 
         if (NetStates.isNetworkAvailable(this)){
-            AsyncHttpPost.PostNewsDetail(index, new HttpCallbackDetailListenner() {
+            AsyncHttpUtils.PostNewsDetail(index, new HttpCallbackDetailListenner() {
                 @Override
                 public void onFinish(String content) {
                     mWebView.loadData(content, "text/html; charset=UTF-8", null);
